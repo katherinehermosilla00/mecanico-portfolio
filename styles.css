@@ -1,0 +1,836 @@
+/* ================================
+   VARIABLES
+================================ */
+:root {
+  --black:  #000000;
+  --dark:   #111111;
+  --panel:  #181818; 
+  --steel:  #e2dede;
+  --orange: #4502ff;
+  --amber:  #0f5e78;
+  --white:  #f0ece4;
+  --muted:  #888880;
+  --rust:   #2f1a8b;
+}
+
+/* ================================
+   RESET & BASE
+================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Barlow Condensed', sans-serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ================================
+   NAVIGATION
+================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  transition: background 0.3s;
+}
+
+nav.scrolled {
+  background: rgba(10,10,10,0.97);
+  border-bottom: 1px solid var(--steel);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.6rem;
+  letter-spacing: 0.15em;
+  color: var(--orange);
+}
+.nav-logo span { color: var(--white); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--orange); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--steel);
+  color: var(--white);
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+/* ================================
+   HERO
+================================ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--steel) 30%, var(--steel) 70%, transparent);
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 120px 48px 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(5rem, 10vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  margin-bottom: 32px;
+}
+.hero-name .accent { color: var(--orange); }
+
+.hero-desc {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 400px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  margin-bottom: 48px;
+}
+
+.hero-cta { display: flex; gap: 16px; align-items: center; }
+
+.hero-right { position: relative; overflow: hidden; }
+
+.hero-image-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+}
+
+.hero-deco {
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 500px; height: 500px;
+  opacity: 0.06;
+  animation: spin 60s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to   { transform: translateY(-50%) rotate(360deg); }
+}
+
+.hero-vertical {
+  position: absolute;
+  right: 32px; top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--steel);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn-primary {
+  background: var(--orange);
+  color: var(--black);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  padding: 14px 36px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.3s, transform 0.2s;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+.btn-primary:hover { background: var(--amber); transform: translateY(-2px); }
+.btn-full { width: 100%; text-align: center; font-size: 1.1rem; padding: 18px; }
+
+.btn-secondary {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--steel);
+  padding-bottom: 4px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.btn-secondary:hover { color: var(--white); border-color: var(--white); }
+
+/* ================================
+   STATS BAR
+================================ */
+.stats-bar {
+  background: var(--panel);
+  border-top: 1px solid var(--steel);
+  border-bottom: 1px solid var(--steel);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stat-item {
+  padding: 36px 40px;
+  border-right: 1px solid var(--steel);
+  transition: background 0.3s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--steel); }
+
+.stat-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--orange);
+  display: block;
+}
+.stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  display: block;
+}
+
+/* ================================
+   SECTIONS
+================================ */
+section { padding: 100px 48px; }
+
+#servicios  { background: var(--dark); }
+#trabajos   { background: var(--black); }
+#perfil     { background: var(--panel); border-top: 1px solid var(--steel); border-bottom: 1px solid var(--steel); }
+#contacto   { background: var(--black); position: relative; overflow: hidden; }
+
+.section-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--orange);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(3rem, 5vw, 5rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 60px;
+}
+
+.accent { color: var(--orange); }
+
+.line-accent {
+  width: 48px; height: 3px;
+  background: var(--orange);
+  margin: 24px 0;
+}
+
+/* SERVICIOS */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.service-card {
+  background: var(--panel);
+  padding: 38px 30px;
+  border: 1px solid var(--steel);
+  border-radius: 16px;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--orange);
+  background: #1e1e1e;
+}
+
+.service-icon {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.service-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.6rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.service-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.service-icon i {
+  font-size: 2.5rem;
+  color: var(--orange);
+  transition: 0.3s ease;
+}
+
+.service-card:hover .service-icon i {
+  transform: scale(1.2);
+  color: #ff7a2f;
+}
+
+/* ================================
+   PERFIL
+================================ */
+
+.perfil-container {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 70px;
+  align-items: center;
+}
+
+.perfil-info {
+  max-width: 620px;
+}
+
+.perfil-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(3.3rem, 5vw, 5rem);
+  line-height: 0.95;
+  margin-bottom: 24px;
+}
+
+
+.perfil-text {
+  color: #d6d6d6;
+  font-size: 1.60rem;
+  line-height: 1.9;
+  margin-bottom: 22px;
+  font-weight: 300;
+}
+
+.perfil-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.perfil-img {
+  width: 100%;
+  max-width: 620px;
+  height: 430px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 18px;
+  border: 1px solid var(--steel);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+  filter: brightness(80%) contrast(110%);
+}
+
+.perfil-media::before {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .perfil-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .perfil-img {
+    max-width: 100%;
+    height: 320px;
+  }
+}
+
+/* ===== GALERÍA GENERAL ===== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+/* CONTENEDOR DE CADA ITEM */
+.gallery-item {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 10px;
+  position: relative;
+  background: #000;
+}
+
+/* IMÁGENES */
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* VIDEOS */
+.gallery-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* EFECTO HOVER */
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+/* TEXTO ENCIMA (overlay) */
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white;
+}
+
+.gallery-label {
+  font-size: 0.9rem;
+}
+
+.videos-trabajo {
+  margin-top: 50px;
+}
+
+.videos-titulo {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.video-card {
+  background: #111;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.video-card video {
+  width: 100%;
+  height: 320px;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+@media (max-width: 768px) {
+  .videos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .video-card video {
+    height: 260px;
+  }
+}
+
+/* ================================
+   CONTACTO
+================================ */
+
+#contacto {
+  position: relative;
+  padding: 120px 5%;
+  overflow: hidden;
+}
+
+.contact-bg-text {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 16vw;
+  color: rgba(255,255,255,0.03);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: start;
+}
+
+.contact-info {
+  max-width: 560px;
+}
+
+.contact-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  line-height: 0.9;
+  margin-bottom: 24px;
+}
+
+.contact-title .accent {
+  display: block;
+}
+
+.contact-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--orange);
+  margin-top: 16px;
+}
+
+.contact-intro {
+  color: #c9c9c9;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--steel);
+}
+
+.contact-detail-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.contact-detail-label {
+  display: block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--orange);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.contact-detail-value {
+  color: var(--white);
+  font-size: 1rem;
+}
+
+/* FORMULARIO */
+.contact-form {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--steel);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--orange);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  display: block;
+  background: #111;
+  border: 1px solid #2b2b2b;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  padding: 15px 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #8f8f8f;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--orange);
+  background: #161616;
+  box-shadow: 0 0 0 3px rgba(232, 99, 26, 0.15);
+}
+
+.form-textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.btn-primary.btn-full {
+  width: 100%;
+  display: block;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary.btn-full:hover {
+  background: #ff7a2f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(232, 99, 26, 0.25);
+}
+
+@media (max-width: 900px) {
+  .contact-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-form {
+    padding: 24px;
+  }
+}
+
+/* ================================
+   FOOTER
+================================ */
+footer {
+  background: var(--panel);
+  border-top: 1px solid var(--steel);
+  padding: 32px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+}
+.footer-copy {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.footer-socials { display: flex; gap: 20px; }
+.footer-socials a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.3s;
+  text-transform: uppercase;
+}
+.footer-socials a:hover { color: var(--orange); }
+
+/* ================================
+   SCROLL REVEAL
+================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ================================
+   MEJORAS VISUALES GENERALES
+================================ */
+
+section {
+  position: relative;
+}
+
+.section-title {
+  margin-bottom: 28px;
+  text-wrap: balance;
+}
+
+.section-subtext,
+.gallery-text,
+.hero-desc,
+.contact-intro,
+.service-desc,
+.perfil-text {
+  max-width: 60ch;
+}
+
+/* más aire visual */
+#perfil,
+#servicios,
+#trabajos,
+#contacto {
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+/* tarjetas más elegantes */
+.service-card,
+.video-card,
+.contact-form,
+.gallery-item {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+
+/* líneas más suaves */
+.service-card,
+.contact-form,
+.video-card,
+.gallery-item,
+.stat-item {
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* mejor lectura */
+p {
+  line-height: 1.75;
+}
+
+/* títulos con más presencia */
+.hero-name,
+.section-title,
+.contact-title {
+  text-wrap: balance;
+}
+
+/* resalta mejor el naranja */
+.accent {
+  color: var(--orange);
+  text-shadow: 0 0 20px rgba(255, 61, 2, 0.12);
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: rgba(10,10,10,0.98);
+    padding: 24px;
+    gap: 20px;
+    border-bottom: 1px solid var(--steel);
+  }
+  .nav-toggle { display: block; }
+
+  section { padding: 64px 24px; }
+
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .hero-left { padding: 100px 24px 60px; }
+
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+
+  .services-grid { grid-template-columns: 1fr; }
+
+  .gallery-intro { grid-template-columns: 1fr; gap: 32px; }
+  .gallery-grid  { grid-template-columns: repeat(2, 1fr); }
+  .gallery-item.featured { grid-column: span 2; }
+
+  .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+
+  footer { flex-direction: column; gap: 20px; text-align: center; }
+}

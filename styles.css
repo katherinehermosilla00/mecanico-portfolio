@@ -116,13 +116,10 @@ nav.scrolled {
   content: '';
   position: absolute;
   left: 50%;
-  top: 12%;
-  bottom: 12%;
+  top: 0;
+  bottom: 0;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--steel), transparent);
-  opacity: 0.5;
 }
-
 .hero-left {
   display: flex;
   flex-direction: column;
